@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.authors = ["Matt Knopp"]
   s.date = %q{2011-09-30}
   s.description = %q{Simple HTTP client using Typheous, derived from the Riak client}
-  s.email = %q{mknopp@yammer-inc.com}
+  s.email = %q{matt.knopp@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.md"
@@ -19,19 +19,21 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
     "Gemfile",
+    "Gemfile.lock",
     "LICENSE.txt",
     "README.md",
     "Rakefile",
     "VERSION",
     "lib/zephyr.rb",
     "test/helper.rb",
-    "test/test_zephyr.rb"
+    "test/test_zephyr.rb",
+    "zephyr.gemspec"
   ]
   s.homepage = %q{http://github.com/mhat/zephyr}
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.5.2}
-  s.summary = %q{TODO: one-line summary of your gem}
+  s.summary = %q{Simple HTTP client using Typheous, derived from the Riak client}
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
