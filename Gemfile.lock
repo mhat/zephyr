@@ -1,0 +1,21 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    git (1.2.5)
+    jeweler (1.6.4)
+      bundler (~> 1.0)
+      git (>= 1.2.5)
+      rake
+    mime-types (1.16)
+    rake (0.9.2)
+    typhoeus (0.2.4)
+      mime-types
+      mime-types
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler (~> 1.0.0)
+  jeweler (~> 1.6.4)
+  typhoeus (>= 0.2.4)
