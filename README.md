@@ -2,7 +2,7 @@
 
 ### Notes
 
-It works for us, handles a few billion operations a day. It hasn't been polished for the public yet. I wanted to get
+It works for us, handles a large number operations a day. It hasn't been polished for the public yet. I wanted to get
 it up on RubyGems quickly: I was fighting the consquences of Ruby's global mutable namespaces combined with the 
 unfortunate choice of naming our library Http and suddenly fighting with http_parser.rb for class Http vs module Http.
 
