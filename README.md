@@ -15,3 +15,7 @@ unfortunate choice of naming our library Http and suddenly fighting with http_pa
 * Matthew Knopp
 * Mohammed Rafiq
 * Ryan Kennedy
+
+### References
+
+* Ruby Riak Client: https://bitbucket.org/basho/riak-ruby-client/src
