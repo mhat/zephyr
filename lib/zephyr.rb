@@ -306,7 +306,6 @@ class Zephyr
     end
   end
 end
-Http = YammerHttp
 
 # Represents headers from an HTTP request or response.
 # Used internally by HTTP backends for processing headers.
