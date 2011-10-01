@@ -66,8 +66,6 @@ class Zephyr
     perform(:head, path_components, headers, expected_statuses, timeout)
   end
 
-  Workfeed::Timer.time_method self, :head, 'http_head'
-
   # Performs a GET request to the specified resource.
   #
   # A request to /users/#{@user.id}/things?q=woof with an Accept header of
@@ -84,8 +82,6 @@ class Zephyr
     verify_path!(path_components)
     perform(:get, path_components, headers, expected_statuses, timeout)
   end
-
-  Workfeed::Timer.time_method self, :get, 'http_get'
 
   # The same thing as #get, but decodes the response entity as JSON (if it's
   # application/json) and adds it under the :json key in the returned hash.
@@ -120,8 +116,6 @@ class Zephyr
     perform(:put, path_components, headers, expected_statuses, timeout, entity)
   end
 
-  Workfeed::Timer.time_method self, :put, 'http_put'
-
   # The same thing as #put, but encodes the entity as JSON and specifies
   # "application/json" as the request entity content type.
   def put_json(expected_statuses, timeout, path_components, entity, headers={})
@@ -145,8 +139,6 @@ class Zephyr
     verify_path_and_entity!(path_components, entity)
     perform(:post, path_components, headers, expected_statuses, timeout, entity)
   end
-
-  Workfeed::Timer.time_method self, :post, 'http_post'
 
   # The same thing as #post, but encodes the entity as JSON and specifies
   # "application/json" as the request entity content type.
@@ -176,8 +168,6 @@ class Zephyr
     verify_path!(path_components)
     perform(:delete, path_components, headers, expected_statuses, timeout)
   end
-
-  Workfeed::Timer.time_method self, :delete, 'http_delete'
 
   # Creates a URI object, combining the root_uri passed on initialization
   # with the given parts.
