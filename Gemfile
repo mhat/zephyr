@@ -6,5 +6,6 @@ gem "typhoeus", ">= 0.2.4"
 group :development do
   gem "bundler", "~> 1.0.0"
   gem "jeweler", "~> 1.6.4"
+  gem "shoulda", "~> 2.11.3"
 end
 
