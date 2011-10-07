@@ -263,10 +263,14 @@ class Zephyr
     end
 
     # request has class methods for :delete, :get, :head, :put, and :post
-    response = Typhoeus::Request.send(method, uri(path_components).to_s, params)
+    http_start = Time.now.to_f
+    response   = Typhoeus::Request.send(method, uri(path_components).to_s, params)
+    http_end   = Time.now.to_f
 
     if defined?(Rails)
-      Rails.logger.info "lib/http.rb: #{method.to_s.upcase} #{uri(path_components).to_s}"
+      Rails.logger.info "[zephyr]: \"%s %s\" %s %0.4f" % [
+        method.to_s.upcase, uri(path_components).to_s, response.code, (http_end - http_start)
+      ]
     end
 
     # be consistent with what came before
@@ -283,8 +287,12 @@ class Zephyr
       end
       result
     else
-      response_body = response.timed_out? || response.code == 0 ? "Exceeded #{timeout}ms" : response.body
-      raise FailedRequest.new(method, expect, response.code, response_headers.to_hash, response_body, response.timed_out?)
+      response_body  = response.timed_out? || response.code == 0 ? "Exceeded #{timeout}ms" : response.body
+      failed_request = FailedRequest.new(method, expect, response.code, response_headers.to_hash, response_body, response.timed_out?)
+      if defined?(Rails)
+        Rails.logger.error "[zephyr]: #{ failed_request }"
+      end
+      raise failed_request
     end
   end
 
