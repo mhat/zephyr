@@ -252,6 +252,9 @@ class Zephyr
     params[:headers] = headers
     params[:timeout] = timeout
     params[:follow_location] = false
+  
+    # seriously, why is this on by default 
+    Typhoeus::Hydra.hydra.disable_memoization
 
     # if you want debugging
     # params[:verbose]         = true 
