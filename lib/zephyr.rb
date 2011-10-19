@@ -45,7 +45,7 @@ class Zephyr
   def default_headers
     {
       'Accept'      => 'application/json;q=0.7, */*;q=0.5',
-      'User-Agent'  => 'lib-http.rb',
+      'User-Agent'  => 'zephyr',
     }
   end
 
