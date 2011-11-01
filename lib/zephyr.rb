@@ -87,15 +87,7 @@ class Zephyr
   # application/json) and adds it under the :json key in the returned hash.
   def get_json(expected_statuses, timeout, path_components, headers={}, yajl_opts={})
     response = get(expected_statuses, timeout, path_components, headers)
-
-    content_type = response[:headers]['content-type']
-    content_type = content_type.first if content_type.respond_to?(:first)
-
-    if content_type.to_s.strip.match /^application\/json/
-      response[:json] = Yajl::Parser.parse(response[:body], yajl_opts)
-    end
-
-    response
+    create_json_response(response, yajl_opts)
   end
 
   # Performs a PUT request to the specified resource.
@@ -119,7 +111,8 @@ class Zephyr
   # The same thing as #put, but encodes the entity as JSON and specifies
   # "application/json" as the request entity content type.
   def put_json(expected_statuses, timeout, path_components, entity, headers={})
-    put(expected_statuses, timeout, path_components, Yajl::Encoder.encode(entity), headers.merge("Content-Type" => "application/json"))
+    response = put(expected_statuses, timeout, path_components, Yajl::Encoder.encode(entity), headers.merge("Content-Type" => "application/json"))
+    create_json_response(response)
   end
 
   # Performs a POST request to the specified resource.
@@ -143,13 +136,14 @@ class Zephyr
   # The same thing as #post, but encodes the entity as JSON and specifies
   # "application/json" as the request entity content type.
   def post_json(expected_statuses, timeout, path_components, entity, headers={})
-    post(
-         expected_statuses,
-         timeout,
-         path_components,
-         Yajl::Encoder.encode(entity),
-         headers.merge("Content-Type" => "application/json")
-         )
+    response = post(
+                    expected_statuses,
+                    timeout,
+                    path_components,
+                    Yajl::Encoder.encode(entity),
+                    headers.merge("Content-Type" => "application/json")
+                   )
+    create_json_response(response)
   end
 
   # Performs a DELETE request to the specified resource.
@@ -308,6 +302,18 @@ class Zephyr
       end
     end
   end
+
+  def create_json_response(response, yajl_opts = {})
+    return response if response.nil? || !response.key?(:headers) || !response[:headers].key?('content-type')
+    content_type = response[:headers]['content-type']
+    content_type = content_type.first if content_type.respond_to?(:first)
+
+    if content_type.to_s.strip.match /^application\/json/
+      response[:json] = Yajl::Parser.parse(response[:body], yajl_opts)
+    end
+    response
+  end
+
 end
 
 # Represents headers from an HTTP request or response.
