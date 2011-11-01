@@ -15,6 +15,7 @@ unfortunate choice of naming our library Http and suddenly fighting with http_pa
 * Matthew Knopp
 * Mohammed Rafiq
 * Ryan Kennedy
+* Vidit Drolia
 
 ### References
 
