@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{zephyr}
-  s.version = "1.0.6"
+  s.version = "1.0.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Knopp"]
-  s.date = %q{2011-11-01}
+  s.date = %q{2011-11-08}
   s.description = %q{Simple HTTP client using Typheous, derived from the Riak client}
   s.email = %q{matt.knopp@gmail.com}
   s.extra_rdoc_files = [
