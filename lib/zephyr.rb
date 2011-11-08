@@ -308,7 +308,7 @@ class Zephyr
     content_type = response[:headers]['content-type']
     content_type = content_type.first if content_type.respond_to?(:first)
 
-    if response[:body] && content_type.to_s.strip.match /^application\/json/
+    if response[:body] && content_type.to_s.strip.match(/^application\/json/)
       response[:json] = Yajl::Parser.parse(response[:body], yajl_opts)
     end
     response
