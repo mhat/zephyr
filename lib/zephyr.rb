@@ -1,3 +1,7 @@
+require 'net/http'
+require 'typhoeus'
+require 'yajl'
+
 # Stolen with a fair bit of modification from the riak-client gem, which is
 # Copyright 2010 Sean Cribbs, Sonian Inc., and Basho Technologies, Inc.
 #

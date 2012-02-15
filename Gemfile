@@ -1,6 +1,7 @@
 
 source "http://rubygems.org"
 gem "typhoeus", ">= 0.2.4"
+gem "yajl-ruby"
 
 
 group :development do

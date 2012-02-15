@@ -12,6 +12,7 @@ GEM
     typhoeus (0.2.4)
       mime-types
       mime-types
+    yajl-ruby (1.1.0)
 
 PLATFORMS
   ruby
@@ -21,3 +22,4 @@ DEPENDENCIES
   jeweler (~> 1.6.4)
   shoulda (~> 2.11.3)
   typhoeus (>= 0.2.4)
+  yajl-ruby
