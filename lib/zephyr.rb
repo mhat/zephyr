@@ -179,7 +179,7 @@ class Zephyr
     @root_uri.dup.tap do |uri|
       parts     = given_parts.dup.unshift(uri.path) # URI#merge is broken.
       uri.query = build_query_string(parts.pop) if parts.last.is_a? Hash
-      uri.path  = ('/%s/' % parts.join('/')).gsub(/\/+/, '/')
+      uri.path  = ('/%s' % parts.join('/')).gsub(/\/+/, '/')
     end
   end
 
