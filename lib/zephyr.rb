@@ -1,3 +1,4 @@
+require 'logger'
 require 'net/http'
 require 'typhoeus'
 require 'yajl'
@@ -52,6 +53,19 @@ class Zephyr
       'User-Agent'  => 'zephyr',
     }
   end
+
+  class << self
+    def logger
+      @@logger
+    end
+
+    def logger=(logger)
+      @@logger = logger
+    end
+  end
+
+  @@logger = Logger.new(STDOUT)
+  @@logger.level = Logger::Severity::WARN
 
   # Performs a HEAD request to the specified resource.
   #
@@ -268,11 +282,9 @@ class Zephyr
     response   = Typhoeus::Request.send(method, uri(path_components).to_s, params)
     http_end   = Time.now.to_f
 
-    if defined?(Rails)
-      Rails.logger.info "[zephyr:#{$$}:#{Time.now.to_f}] \"%s %s\" %s %0.4f" % [
-        method.to_s.upcase, uri(path_components).to_s, response.code, (http_end - http_start)
-      ]
-    end
+    Zephyr.logger.info "[zephyr:#{$$}:#{Time.now.to_f}] \"%s %s\" %s %0.4f" % [
+      method.to_s.upcase, uri(path_components).to_s, response.code, (http_end - http_start)
+    ]
 
     # be consistent with what came before
     response_headers = Headers.new.tap do |h|
@@ -290,9 +302,7 @@ class Zephyr
     else
       response_body  = response.timed_out? || response.code == 0 ? "Exceeded #{timeout}ms" : response.body
       failed_request = FailedRequest.new(method, expect, response.code, response_headers.to_hash, response_body, response.timed_out?)
-      if defined?(Rails)
-        Rails.logger.error "[zephyr:#{$$}:#{Time.now.to_f}]: #{ failed_request }"
-      end
+      Zephyr.logger.error "[zephyr:#{$$}:#{Time.now.to_f}]: #{ failed_request }"
       raise failed_request
     end
   end
