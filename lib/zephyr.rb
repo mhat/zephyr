@@ -43,6 +43,8 @@ end
 
 # A simple front-end for doing HTTP requests quickly and simply.
 class Zephyr
+  autoload :FailedRequest, "zephyr/failed_request"
+
   def initialize(root_uri = '')
     @root_uri = URI.parse(root_uri.to_s).freeze
   end
@@ -300,9 +302,12 @@ class Zephyr
       end
       result
     else
-      response_body  = response.timed_out? || response.code == 0 ? "Exceeded #{timeout}ms" : response.body
-      failed_request = FailedRequest.new(method, expect, response.code, response_headers.to_hash, response_body, response.timed_out?)
-      Zephyr.logger.error "[zephyr:#{$$}:#{Time.now.to_f}]: #{ failed_request }"
+      failed_request = FailedRequest.new(:method        => method,
+                                         :uri           => uri(path_components),
+                                         :expected_code => expect,
+                                         :timeout       => timeout,
+                                         :response      => response)
+      Zephyr.logger.error "[zephyr:#{$$}:#{Time.now.to_f}]: #{failed_request}"
       raise failed_request
     end
   end
@@ -354,19 +359,5 @@ class Headers
   def parse(chunk)
     key, value = self.class.parse(chunk)
     add_field(key, value) if key && value
-  end
-end
-
-class FailedRequest < StandardError
-  attr_reader :method
-  attr_reader :expected
-  attr_reader :code
-  attr_reader :headers
-  attr_reader :body
-  attr_reader :timed_out
-
-  def initialize(method, expected_code, received_code, headers, body, timed_out)
-    @method, @expected, @code, @headers, @body, @timed_out = method, expected_code, received_code, headers, body, timed_out
-    super "Expected #{@expected.inspect} from the server but received #{@code}. #{@body}"
   end
 end
