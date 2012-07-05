@@ -194,7 +194,6 @@ class Zephyr
   def uri(given_parts = [])
     @root_uri.dup.tap do |uri|
       parts     = given_parts.dup.unshift(uri.path) # URI#merge is broken.
-      uri.query = build_query_string(parts.pop) if parts.last.is_a? Hash
       uri.path  = ('/%s' % parts.join('/')).gsub(/\/+/, '/')
     end
   end
@@ -207,21 +206,6 @@ class Zephyr
 
   def cleanup!
     Typheous::Hydra.hydra.cleanup
-  end
-
-  # Assembles a query string from a Hash, escaping values and keys. If a
-  # value is an Array, the query parameter simply appears twice.
-  #
-  # Stolen from Rack (with minor changes for sorting).
-  #
-  def build_query_string(params)
-    params.map do |k, v|
-      if v.kind_of? Array
-        build_query_string(v.map { |x| [k, x] })
-      else
-        "#{percent_encode(k)}=#{percent_encode(v)}"
-      end
-    end.sort.join '&'
   end
 
   def percent_encode(value)
@@ -266,8 +250,9 @@ class Zephyr
     params[:headers] = headers
     params[:timeout] = timeout
     params[:follow_location] = false
-  
-    # seriously, why is this on by default 
+    params[:params]  = path_components.pop if path_components.last.is_a?(Hash)
+
+    # seriously, why is this on by default
     Typhoeus::Hydra.hydra.disable_memoization
 
     # if you want debugging
@@ -276,7 +261,7 @@ class Zephyr
     # have a vague feeling this isn't going to work as expected
     if method == :post || method == :put
       data = data.read if data.respond_to?(:read)
-      params[:body] = data
+      params[:body] = data if data != ''
     end
 
     # request has class methods for :delete, :get, :head, :put, and :post
