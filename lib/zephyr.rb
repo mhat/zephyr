@@ -57,12 +57,22 @@ class Zephyr
   end
 
   class << self
+    @debug_mode = false
+    
     def logger
       @@logger
     end
 
     def logger=(logger)
       @@logger = logger
+    end
+
+    def debug_mode
+      @debug_mode
+    end
+
+    def debug_mode=(mode)
+      @debug_mode = mode
     end
   end
 
@@ -256,7 +266,7 @@ class Zephyr
     Typhoeus::Hydra.hydra.disable_memoization
 
     # if you want debugging
-    # params[:verbose]         = true 
+    params[:verbose] = Zephyr.debug_mode
 
     # have a vague feeling this isn't going to work as expected
     if method == :post || method == :put
