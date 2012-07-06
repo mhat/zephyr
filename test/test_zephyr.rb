@@ -74,10 +74,14 @@ class TestZephyr < Test::Unit::TestCase
   end
 
   context "using Typhoeus extensions" do
+    should "encode properly with Zephyr" do
+      assert_equal '%E3%81%BE%E3%81%A4%E3%82%82%E3%81%A8', Typhoeus::Utils.escape('まつもと')
+    end
+
     should "use Zephyr for escaping" do
       z = Zephyr.new("http://www.google.com")
       Zephyr.expects(:percent_encode).times(4)
-      z.get(200, 1000, [{:query => ["test string", "again"]}])
+      z.get(200, 1000, [{:query => ["test string", "まつもと"]}])
     end
 
     should "use Zephyr for building query string" do
