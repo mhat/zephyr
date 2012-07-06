@@ -1,6 +1,7 @@
 require 'logger'
 require 'net/http'
 require 'typhoeus'
+require 'ext/typhoeus_ext'
 require 'yajl'
 
 # Stolen with a fair bit of modification from the riak-client gem, which is
@@ -58,7 +59,7 @@ class Zephyr
 
   class << self
     @debug_mode = false
-    
+
     def logger
       @@logger
     end
@@ -73,6 +74,30 @@ class Zephyr
 
     def debug_mode=(mode)
       @debug_mode = mode
+    end
+
+    def percent_encode(value)
+      typhoeus_easy.send(:easy_escape, value.to_s, value.to_s.bytesize)
+    end
+
+    def build_query_string(params)
+      params.map do |k, v|
+        if v.kind_of? Array
+          build_query_string(v.map { |x| [k, x] })
+        else
+          "#{percent_encode(k)}=#{percent_encode(v)}"
+        end
+      end.sort.join '&'
+    end
+
+  private
+
+    # NOTE: This is here only because it provides a binding to
+    # Curb's 'easy_escape' function, which does what we want.
+    # Don't use it to perform requests. Ever.
+    #
+    def typhoeus_easy
+      @_typhoeus_easy ||= Typhoeus::Easy.new.freeze
     end
   end
 
@@ -218,20 +243,6 @@ class Zephyr
     Typheous::Hydra.hydra.cleanup
   end
 
-  def percent_encode(value)
-    typhoeus_easy.send(:easy_escape, value.to_s, value.to_s.bytesize)
-  end
-
-  private
-
-  # NOTE: This is here only because it provides a binding to
-  # Curb's 'easy_escape' function, which does what we want.
-  # Don't use it to perform requests. Ever.
-  #
-  def typhoeus_easy
-    @_typhoeus_easy ||= Typhoeus::Easy.new.freeze
-  end
-
   def verify_path_and_entity!(path_components, entity)
     begin
       verify_path!(path_components)
@@ -280,7 +291,7 @@ class Zephyr
     http_end   = Time.now.to_f
 
     Zephyr.logger.info "[zephyr:#{$$}:#{Time.now.to_f}] \"%s %s\" %s %0.4f" % [
-      method.to_s.upcase, uri(path_components).to_s, response.code, (http_end - http_start)
+      method.to_s.upcase, response.request.url, response.code, (http_end - http_start)
     ]
 
     # be consistent with what came before
@@ -298,7 +309,7 @@ class Zephyr
       result
     else
       failed_request = FailedRequest.new(:method        => method,
-                                         :uri           => uri(path_components),
+                                         :uri           => response.request.url,
                                          :expected_code => expect,
                                          :timeout       => timeout,
                                          :response      => response)

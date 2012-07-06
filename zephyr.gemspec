@@ -45,6 +45,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.6.4"])
       s.add_development_dependency(%q<shoulda>, ["~> 2.11.3"])
+      s.add_development_dependency(%q<mocha>, ["~> 0.12.0"])
     else
       s.add_dependency(%q<typhoeus>, [">= 0.2.4"])
       s.add_dependency(%q<yajl-ruby>, [">= 0"])
