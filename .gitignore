@@ -46,3 +46,6 @@ pkg
 
 # For rubinius:
 #*.rbc
+
+# Keep packaged gems out of repo:
+*.gem
