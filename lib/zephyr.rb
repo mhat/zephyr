@@ -301,7 +301,7 @@ class Zephyr
       end
     end
 
-    if valid_response?(expect, response.code)
+    if !response.timed_out? && valid_response?(expect, response.code)
       result = { :headers => response_headers.to_hash, :status => response.code }
       if return_body?(method, response.code)
         result[:body] = response.body
