@@ -147,4 +147,12 @@ class TestZephyr < Test::Unit::TestCase
     end.returns(delete_response)
     z.delete(204, 1, ["users", 1])
   end
+
+  should "support custom HTTP methods" do
+    z = Zephyr.new("http://www.example.com")
+    Typhoeus::Request.expects(:run).with do |uri, params|
+      params[:method] == :purge
+    end.returns(TYPHOEUS_RESPONSE)
+    z.custom(:purge, 200, 1, ["images", "4271e4c1594adc92651cf431029429d8"])
+  end
 end

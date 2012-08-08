@@ -218,6 +218,22 @@ class Zephyr
     perform(:delete, path_components, headers, expected_statuses, timeout)
   end
 
+  # Performs a custom HTTP method request to the specified resource.
+  #
+  # A PURGE request to /users/#{@user.id} which is expecting a 200 OK within 666ms
+  #
+  #   http.custom(:purge, 200, 666, ["users", @user.id])
+  #
+  # This returns a hash with three keys:
+  #   :status       The numeric HTTP status code
+  #   :body         The body of the response entity, if any
+  #   :headers      A hash of header values
+  def custom(method, expected_statuses, timeout, path_components, headers={})
+    headers = default_headers.merge(headers)
+    verify_path!(path_components)
+    perform(method, path_components, headers, expected_statuses, timeout)
+  end
+
   # Creates a URI object, combining the root_uri passed on initialization
   # with the given parts.
   #
@@ -272,6 +288,7 @@ class Zephyr
     params[:timeout] = timeout
     params[:follow_location] = false
     params[:params]  = path_components.pop if path_components.last.is_a?(Hash)
+    params[:method]  = method
 
     # seriously, why is this on by default
     Typhoeus::Hydra.hydra.disable_memoization
@@ -285,9 +302,8 @@ class Zephyr
       params[:body] = data if data != ''
     end
 
-    # request has class methods for :delete, :get, :head, :put, and :post
     http_start = Time.now.to_f
-    response   = Typhoeus::Request.send(method, uri(path_components).to_s, params)
+    response   = Typhoeus::Request.run(uri(path_components).to_s, params)
     http_end   = Time.now.to_f
 
     Zephyr.logger.info "[zephyr:#{$$}:#{Time.now.to_f}] \"%s %s\" %s %0.4f" % [
