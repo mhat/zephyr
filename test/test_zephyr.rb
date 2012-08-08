@@ -1,6 +1,14 @@
 require 'helper'
 
 class TestZephyr < Test::Unit::TestCase
+  PARAMS = {  :method => :get, :timeout => 1000,
+              :params => [{:query => ["test string", "again"]}] }
+
+  TYPHOEUS_RESPONSE = Typhoeus::Response.new(
+    :code => 200,
+    :body => '',
+    :request => Typhoeus::Request.new("http://www.example.com")
+  )
 
   context "urls" do
     should "be canonicalized" do
@@ -79,15 +87,63 @@ class TestZephyr < Test::Unit::TestCase
     end
 
     should "use Zephyr for escaping" do
-      z = Zephyr.new("http://www.google.com")
-      Zephyr.expects(:percent_encode).times(4)
-      z.get(200, 1000, [{:query => ["test string", "まつもと"]}])
+      r = Typhoeus::Request.new("http://www.google.com", PARAMS)
+      Zephyr.expects(:percent_encode).times(2)
+      r.params_string
     end
 
     should "use Zephyr for building query string" do
-      z = Zephyr.new("http://www.google.com")
+      r = Typhoeus::Request.new("http://www.google.com", PARAMS)
       Zephyr.expects(:build_query_string).times(1)
-      z.get(200, 1000, [{:query => ["test string", "again"]}])
+      r.params_string
     end
+  end
+
+  should "support HTTP GET" do
+    z = Zephyr.new("http://www.example.com")
+    Typhoeus::Request.expects(:run).with do |uri, params|
+      params[:method] == :get && uri == 'http://www.example.com/images/1'
+    end.returns(TYPHOEUS_RESPONSE)
+    z.get(200, 1, ["images", "1"])
+  end
+
+  should "support HTTP POST" do
+    post_response = Typhoeus::Response.new(
+      :code => 201,
+      :body => '',
+      :request => Typhoeus::Request.new("http://www.example.com")
+    )
+
+    z = Zephyr.new("http://www.example.com")
+    Typhoeus::Request.expects(:run).with do |uri, params|
+      params[:method] == :post &&
+      params[:params] == {:name => 'Test User'} &&
+      uri == 'http://www.example.com/users'
+    end.returns(post_response)
+    z.post(201, 1, ["users", {:name => 'Test User'}], '')
+  end
+
+  should "support HTTP PUT" do
+    z = Zephyr.new("http://www.example.com")
+    Typhoeus::Request.expects(:run).with do |uri, params|
+      params[:method] == :put &&
+      params[:params] == {:name => 'Test User'} &&
+      uri == 'http://www.example.com/users/1'
+    end.returns(TYPHOEUS_RESPONSE)
+    z.put(200, 1, ["users", 1, {:name => 'Test User'}], '')
+  end
+
+  should "support HTTP DELETE" do
+    delete_response = Typhoeus::Response.new(
+      :code => 204,
+      :body => '',
+      :request => Typhoeus::Request.new("http://www.example.com")
+    )
+
+    z = Zephyr.new("http://www.example.com")
+    Typhoeus::Request.expects(:run).with do |uri, params|
+      params[:method] == :delete && uri == 'http://www.example.com/users/1'
+    end.returns(delete_response)
+    z.delete(204, 1, ["users", 1])
   end
 end
