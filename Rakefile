@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "zephyr"
   gem.homepage = "http://github.com/mhat/zephyr"
   gem.license = "MIT"
-  gem.summary = %Q{Simple HTTP client using Typheous, derived from the Riak client}
-  gem.description = %Q{Simple HTTP client using Typheous, derived from the Riak client}
+  gem.summary = %Q{Battle-tested HTTP client using Typhoeus, derived from the Riak client}
+  gem.description = %Q{Battle-tested HTTP client using Typhoeus, derived from the Riak client}
   gem.email = "matt.knopp@gmail.com"
   gem.authors = ["Matt Knopp"]
   # dependencies defined in Gemfile
