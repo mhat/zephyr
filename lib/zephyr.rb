@@ -1,7 +1,9 @@
 require 'logger'
 require 'net/http'
 require 'typhoeus'
-require 'ext/typhoeus_ext'
+require 'typhoeus_ext/request.rb'
+require 'typhoeus_ext/response.rb'
+require 'typhoeus_ext/utils.rb'
 require 'yajl'
 
 # Stolen with a fair bit of modification from the riak-client gem, which is
