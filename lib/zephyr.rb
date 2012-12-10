@@ -79,7 +79,7 @@ class Zephyr
     end
 
     def percent_encode(value)
-      typhoeus_easy.send(:easy_escape, value.to_s, value.to_s.bytesize)
+      Typhoeus::Curl.easy_escape(typhoeus_easy.handle, value.to_s, value.to_s.bytesize)
     end
 
     def build_query_string(params)
