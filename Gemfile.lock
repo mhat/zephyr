@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    zephyr (1.1.9)
+    zephyr (1.2.1)
       typhoeus (~> 0.4.2)
       yajl-ruby
 
