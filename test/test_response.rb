@@ -20,4 +20,9 @@ class TestResponse < Test::Unit::TestCase
     @response.stubs(:code).returns(500)
     assert @response.retryable_request?
   end
+
+  should 'be retryable when the connection failed' do
+    @response.stubs(:curl_return_code).returns(7)
+    assert @response.retryable_request?
+  end
 end
