@@ -11,11 +11,13 @@ unfortunate choice of naming our library Http and suddenly fighting with http_pa
 
 * Coda Hale
 * Benjamin Kudria
+* Brian Morton
 * Jordi Bunster
 * Matthew Knopp
 * Mohammed Rafiq
 * Ryan Kennedy
 * Vidit Drolia
+* Vivek Aggarwal
 
 ### References
 
