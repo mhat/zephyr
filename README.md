@@ -22,3 +22,14 @@ unfortunate choice of naming our library Http and suddenly fighting with http_pa
 ### References
 
 * Ruby Riak Client: https://bitbucket.org/basho/riak-ruby-client/src
+
+### Deploying to RubyGems
+
+1. Bump version in `VERSION` and `zephyr.gemspec`.
+2. Run `bundle` to update gem in Gemfile.lock.
+3. Commit changes with version update.
+4. Tag the release
+  * `git tag -a v1.x.x`
+	* `git push --tags`
+5. Build the gem: `gem build zephyr.gemspec`
+6. Push to rubygems: `gem push zephyr-1.2.2.gem`
