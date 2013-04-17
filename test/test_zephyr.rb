@@ -31,6 +31,27 @@ class TestZephyr < Test::Unit::TestCase
       zephyr = Zephyr.new
       assert_equal 'a=1&a=2', Zephyr.build_query_string(:a => [ 2, 1 ])
     end
+
+    should "be present when POST and body is present" do
+      z = Zephyr.new("http://www.example.com")
+      Typhoeus::Request.expects(:run).with do |uri, params|
+        params[:method] == :post && !params[:params] &&
+          uri == 'http://www.example.com/users/1?something=true' &&
+          params[:body] == 'body present'
+      end.returns(TYPHOEUS_RESPONSE)
+      z.post(200, 1, ["users", 1, {:something => 'true'}], 'body present')
+    end
+
+    should "use form data from path when POST and no body present" do
+      z = Zephyr.new("http://www.example.com")
+      Typhoeus::Request.expects(:run).with do |uri, params|
+        params[:method] == :post &&
+          params[:params] == {:something => 'true'}
+          uri == 'http://www.example.com/users/1' &&
+          !params[:body]
+      end.returns(TYPHOEUS_RESPONSE)
+      z.post(200, 1, ["users", 1, {:something => 'true'}], '')
+    end
   end
 
   context "percent encoding" do

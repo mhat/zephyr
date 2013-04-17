@@ -247,6 +247,7 @@ class Zephyr
   def uri(given_parts = [])
     @root_uri.dup.tap do |uri|
       parts     = given_parts.dup.unshift(uri.path) # URI#merge is broken.
+      uri.query = Zephyr.build_query_string(parts.pop) if parts.last.is_a? Hash
       uri.path  = ('/%s' % parts.join('/')).gsub(/\/+/, '/')
     end
   end
@@ -289,7 +290,11 @@ class Zephyr
     params[:headers] = headers
     params[:timeout] = timeout
     params[:follow_location] = false
-    params[:params]  = path_components.pop if path_components.last.is_a?(Hash)
+
+    if path_components.last.is_a?(Hash) && (!data || data.empty?)
+      params[:params]  = path_components.pop
+    end
+
     params[:method]  = method
 
     # seriously, why is this on by default
