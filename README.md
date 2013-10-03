@@ -18,6 +18,7 @@ unfortunate choice of naming our library Http and suddenly fighting with http_pa
 * Ryan Kennedy
 * Vidit Drolia
 * Vivek Aggarwal
+* Sean Wolfe
 
 ### References
 
