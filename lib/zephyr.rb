@@ -252,6 +252,20 @@ class Zephyr
     end
   end
 
+  # Configure SSL parameters that will be passed on to Typhoeus.
+  #
+  # Example:
+  #   http = Zephyr.new 'http://host/'
+  #   http.ssl(:ssl_cacert => "ca_file.cer",
+  #            :ssl_cert => "acert.crt",
+  #            :ssl_key => "akey.key")
+  #
+  def ssl(ssl_params)
+    raise ArgumentError, "ssl_params must be a hash" unless ssl_params.is_a? Hash
+    @ssl_params = ssl_params
+  end
+
+
   # Comes handy in IRB
   #
   def inspect
@@ -308,6 +322,9 @@ class Zephyr
       data = data.read if data.respond_to?(:read)
       params[:body] = data if data != ''
     end
+
+    # add the ssl_params if there are any.
+    params.merge!(@ssl_params) unless @ssl_params.nil? || @ssl_params.empty?
 
     http_start = Time.now.to_f
     response   = Typhoeus::Request.run(uri(path_components).to_s, params)

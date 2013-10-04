@@ -176,4 +176,19 @@ class TestZephyr < Test::Unit::TestCase
     end.returns(TYPHOEUS_RESPONSE)
     z.custom(:purge, 200, 1, ["images", "4271e4c1594adc92651cf431029429d8"])
   end
+
+  should 'support ssl certificates' do
+    z = Zephyr.new('http://www.example.com')
+    z.ssl(:ssl_cacert => 'ca_file.cer', :ssl_cert => 'acert.crt', :ssl_key => 'akey.key')
+
+    Typhoeus::Request.expects(:run).with do |uri, params|
+      params[:ssl_cacert] == 'ca_file.cer' &&
+        params[:ssl_cert] == 'acert.crt' &&
+        params[:ssl_key] == 'akey.key' && 
+        params[:method] == :get &&
+        uri == 'http://www.example.com/users/1'
+    end.returns(TYPHOEUS_RESPONSE)
+
+    z.get(200, 1, ['users', '1'])
+  end
 end
