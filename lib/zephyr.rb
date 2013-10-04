@@ -302,7 +302,7 @@ class Zephyr
   def perform(method, path_components, headers, expect, timeout, data=nil)
     params           = {}
     params[:headers] = headers
-    params[:timeoutut] = timeout
+    params[:timeout] = timeout
     params[:follow_location] = false
 
     if path_components.last.is_a?(Hash) && (!data || data.empty?)
